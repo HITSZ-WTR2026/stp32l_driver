@@ -27,7 +27,7 @@ void STP32L_Uart_RxCpltCallback(UART_HandleTypeDef* huart)
 void Init(void* argument)
 {
     /* 初始化代码 */
-    HAL_UART_RegisterCallback(stp32l.huart, HAL_UART_RX_COMPLETE_CB_ID, STP32L_Uart_RxCpltCallback);
+    HAL_UART_RegisterCallback(&huart4, HAL_UART_RX_COMPLETE_CB_ID, STP32L_Uart_RxCpltCallback);
     STP32L_Init(&stp32l, &huart4);
 
     /* 初始化完成后退出线程 */
