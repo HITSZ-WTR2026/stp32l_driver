@@ -108,7 +108,7 @@ void STP32L_DataDecode(STP32L_t* stp32l)
     }
     const uint16_t data_len = read_u16(pData);
     pData += 2;
-    if (data_len != STP32L_POINT_NUM * STP32L_POINT_SIZE)
+    if (data_len != STP32L_POINT_NUM * STP32L_POINT_SIZE + 4)
     {
         DEBUG_ERROR_COUNT(stp32l);
         return;
@@ -136,8 +136,14 @@ void STP32L_DataDecode(STP32L_t* stp32l)
     distance /= (float) conf_sum;
     const uint32_t timestamp = read_u32(pData);
     pData += 4;
-    // 由于 STP32L 官方例程跟屎一样，文档也没有说这个部分到底是用的什么校验格式，这里我们直接忽略
-    UNUSED(*pData++);
+    uint8_t sum = 0;
+    for (size_t i = STP32L_HEAD_LEN; i < STP32L_FREAM_LEN - 1; i++)
+        sum += stp32l->rx_buffer[i];
+    if (sum != *pData)
+    { // 校验和校验不通过
+        DEBUG_ERROR_COUNT(stp32l);
+        return;
+    }
     // 保存数据
     stp32l->distance  = distance;
     stp32l->timestamp = timestamp;
