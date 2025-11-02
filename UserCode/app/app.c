@@ -7,15 +7,15 @@
 #include "cmsis_os2.h"
 #include "usart.h"
 
-#include "drivers/stp32l.h"
+#include "drivers/stp23l.h"
 
-STP32L_t stp32l;
+STP23L_t stp23l;
 
-void STP32L_Uart_RxCpltCallback(UART_HandleTypeDef* huart)
+void STP23L_Uart_RxCpltCallback(UART_HandleTypeDef* huart)
 {
-    if (huart == stp32l.huart)
+    if (huart == stp23l.huart)
     {
-        STP32L_RxCallback(&stp32l);
+        STP23L_RxCallback(&stp23l);
     }
 }
 
@@ -27,8 +27,8 @@ void STP32L_Uart_RxCpltCallback(UART_HandleTypeDef* huart)
 void Init(void* argument)
 {
     /* 初始化代码 */
-    HAL_UART_RegisterCallback(&huart4, HAL_UART_RX_COMPLETE_CB_ID, STP32L_Uart_RxCpltCallback);
-    STP32L_Init(&stp32l, &huart4);
+    HAL_UART_RegisterCallback(&huart2, HAL_UART_RX_COMPLETE_CB_ID, STP23L_Uart_RxCpltCallback);
+    STP23L_Init(&stp23l, &huart2);
 
     /* 初始化完成后退出线程 */
     osThreadExit();
